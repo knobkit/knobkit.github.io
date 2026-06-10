@@ -13,7 +13,7 @@
     "vite": "^8.0.16"
   },
   "dependencies": {
-    "knobkit": "^0.0.4",
+    "knobkit": "^0.0.5",
     "sucrase": "^3.35.0"
   }
 }
