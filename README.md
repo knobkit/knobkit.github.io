@@ -4,27 +4,36 @@ The knobkit marketing site, served by GitHub Pages at <https://knobkit.github.io
 
 ## Layout
 
-- `mocks/` — four design directions for the landing page (open `mocks/index.html` to flip
-  through them; each has a light/dark toggle, `#dark`/`#light` hash forces a mode). The real
-  `index.html` gets built from the winning direction.
-- `playground/` + `assets/` — the live playground, a static `knobkit build` of
-  [`examples/playground`](https://github.com/knobkit/knobkit/tree/main/examples/playground).
-  `knobkit build` emits absolute `/assets/…` URLs (no `base` option yet), so the hashed assets
-  live at the site root and `playground/index.html` works from its subpath.
+- `index.html` — the landing page: minimal hero (copy left, demo video right), the live
+  playground full-width below. Self-contained HTML/CSS/JS, light/dark via system preference
+  plus a toggle. Preview locally with `python3 -m http.server` from the repo root (the
+  playground iframe and video need HTTP, not file://).
+- `playground-src/` — the playground source (moved here from the main repo's
+  `examples/playground`); depends on the published `knobkit` from npm, so the public
+  playground always matches the version users install.
+- `playground/` + `assets/` — the deployed playground, a static `knobkit build` of
+  `playground-src/`. `knobkit build` emits absolute `/assets/…` URLs (no `base` option yet),
+  so the hashed assets live at the site root and `playground/index.html` works from its subpath.
 - `demo/` — Remotion source for the demo video (see `demo/README.md` for preview/render
   commands, host and Docker).
 - `demo.mp4` / `demo.gif` — the rendered demo. The MP4 is embedded by the landing page; the
   GIF is hot-linked by the main repo's README.
+- `.github/workflows/pages.yml` — deploys the repo as-is to GitHub Pages on push to `main`
+  (set Pages source to "GitHub Actions" in the repo settings).
+
+When the playground is rebuilt, bump the `?v=N` query on the `/playground/` iframe in
+`index.html` so cached copies of the old `playground/index.html` (with stale asset hashes)
+can't serve a blank embed.
 
 ## Rebuilding
 
 After a knobkit release (versions are lockstep):
 
 ```bash
-# playground — from a checkout of knobkit/knobkit at the release tag
-pnpm -F knobkit build && pnpm -F knobkit-example-playground build
-cp examples/playground/dist/index.html <site>/playground/index.html
-rm -rf <site>/assets && cp -R examples/playground/dist/assets <site>/assets
+# playground — from playground-src/ (bump the knobkit dep to the new version first)
+npm install && npm run build
+cp dist/index.html ../playground/index.html
+rm -rf ../assets && cp -R dist/assets ../assets
 
 # demo — from <site>/demo
 npm run render:mp4 && npm run render:gif

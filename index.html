@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>knobkit — your AI app, live as you type</title>
+<meta name="description" content="knobkit is widgets + events for AI apps: declare widgets, write handlers, done. The same file runs entirely in the browser or on a stateless Node server — swap one line." />
+<link rel="canonical" href="https://knobkit.github.io/" />
+<meta property="og:title" content="knobkit — your AI app, live as you type" />
+<meta property="og:description" content="Declare widgets, write event handlers — done. Runs in the browser or on a stateless Node server. Try the playground, nothing to install." />
+<meta property="og:url" content="https://knobkit.github.io/" />
+<meta property="og:image" content="https://knobkit.github.io/social-preview.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='14' fill='%232563eb'/%3E%3Cg stroke='%23ffffff' stroke-width='7' stroke-linecap='round'%3E%3Cline x1='23' y1='16' x2='23' y2='48'/%3E%3Cline x1='23' y1='33' x2='42' y2='18'/%3E%3Cline x1='23' y1='33' x2='42' y2='46'/%3E%3C/g%3E%3Ccircle cx='23' cy='33' r='6.5' fill='%23ffffff'/%3E%3Ccircle cx='23' cy='33' r='2.8' fill='%231d4ed8'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #16181d;
+    --dim: #70767f;
+    --line: #e6e8ec;
+    --accent: #2563eb;
+    --tint: #f3f6fd;
+  }
+  [data-theme="dark"] {
+    --bg: #101216;
+    --ink: #eceef2;
+    --dim: #888f9b;
+    --line: #272b33;
+    --accent: #6fa1ff;
+    --tint: #141a26;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink);
+    font: 17px/1.65 "Public Sans", sans-serif;
+    background:
+      linear-gradient(168deg, var(--tint) 0%, var(--bg) 38%, var(--bg) 72%, var(--tint) 100%);
+    background-attachment: fixed;
+    transition: color .2s;
+  }
+  /* very subtle svg motif — the knob cap, tiled, barely-there */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='84'%3E%3Ccircle cx='42' cy='42' r='7' fill='none' stroke='%232563eb' stroke-width='1'/%3E%3Ccircle cx='42' cy='42' r='1.6' fill='%232563eb'/%3E%3C/svg%3E");
+    opacity: 0.045;
+  }
+  [data-theme="dark"] body::before { opacity: 0.06; filter: brightness(1.6); }
+  main { position: relative; z-index: 1; }
+
+  .toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 9;
+    border: 1px solid var(--line); background: var(--bg); color: var(--dim);
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 14px;
+  }
+  .toggle:hover { color: var(--ink); border-color: var(--dim); }
+
+  /* hero: copy left, film right — full width, fluid */
+  .hero {
+    padding: 84px clamp(24px, 4vw, 64px) 0;
+    display: grid; grid-template-columns: minmax(380px, 0.8fr) 1.2fr; gap: clamp(32px, 4vw, 72px);
+    align-items: center;
+  }
+  .mark { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+  .mark h1 { font: 800 40px/1 "Public Sans", sans-serif; letter-spacing: -0.035em; margin: 0; }
+  .tagline { font-size: 21px; margin: 0 0 16px; }
+  .tagline em { font-style: normal; color: var(--accent); }
+  .pitch { color: var(--dim); margin: 0 0 28px; max-width: 48ch; }
+  .pitch b { color: var(--ink); font-weight: 600; }
+  .install {
+    display: inline-block; font: 500 15.5px/1 "IBM Plex Mono", monospace;
+    color: var(--ink); border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg);
+    padding: 14px 22px; cursor: copy; user-select: all;
+    transition: border-color .15s;
+  }
+  .install:hover { border-color: var(--accent); }
+  .install .ps1 { color: var(--accent); }
+  .badges { margin-top: 16px; font-size: 13.5px; color: var(--dim); }
+  .badges a { color: var(--dim); }
+
+  /* cap the video alone (not the page) so ultra-wide screens don't balloon it */
+  .filmwrap { position: relative; max-width: 1100px; justify-self: end; width: 100%; }
+  .filmwrap video {
+    width: 100%; display: block; border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(20, 40, 90, 0.10);
+  }
+  [data-theme="dark"] .filmwrap video { box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
+  .filmwrap figcaption {
+    margin-top: 10px; text-align: center;
+    font: 400 12.5px/1 "IBM Plex Mono", monospace; color: var(--dim);
+  }
+
+  /* the playground — full width, minimal framing */
+  .pg { margin: 72px 0 0; padding: 0 clamp(24px, 4vw, 64px); }
+  .pg .hint {
+    display: flex; justify-content: space-between;
+    font: 400 13px/1 "IBM Plex Mono", monospace; color: var(--dim);
+    padding: 0 4px 10px;
+  }
+  .pg .hint b { color: var(--accent); font-weight: 500; }
+  .pg .shell {
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    background: #fff; box-shadow: 0 24px 60px rgba(20, 40, 90, 0.08);
+  }
+  [data-theme="dark"] .pg .shell { box-shadow: 0 24px 60px rgba(0,0,0,0.45); }
+  .pg iframe { display: block; width: 100%; height: 72vh; min-height: 480px; border: 0; }
+
+  footer {
+    margin: 76px 0 0; padding: 22px clamp(24px, 4vw, 64px) 56px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    font-size: 13.5px; color: var(--dim);
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  @media (max-width: 920px) {
+    .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 64px; }
+    .pitch { max-width: none; }
+    .filmwrap { justify-self: stretch; }
+  }
+</style>
+</head>
+<body>
+<button class="toggle" id="toggle" aria-label="toggle color scheme">◐</button>
+<main>
+  <div class="hero">
+    <div>
+      <div class="mark">
+        <svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="14" fill="#2563eb"/><g stroke="#fff" stroke-width="7" stroke-linecap="round"><line x1="23" y1="16" x2="23" y2="48"/><line x1="23" y1="33" x2="42" y2="18"/><line x1="23" y1="33" x2="42" y2="46"/></g><circle cx="23" cy="33" r="6.5" fill="#fff"/><circle cx="23" cy="33" r="2.8" fill="#1d4ed8"/></svg>
+        <h1>knobkit</h1>
+      </div>
+      <p class="tagline">Your AI app, <em>live as you type</em>.</p>
+      <p class="pitch">Declare widgets, write event handlers — done. The same file runs entirely
+      in the browser, or with handlers on a <b>stateless</b> Node server. Swap one line.</p>
+      <div class="install"><span class="ps1">$</span> npm create knobkit@latest</div>
+      <div class="badges">free · open source · MIT · <a href="https://github.com/knobkit/knobkit">github</a> · <a href="https://www.npmjs.com/package/knobkit">npm</a></div>
+    </div>
+    <figure class="filmwrap" style="margin:0">
+      <video src="/demo.mp4" autoplay muted loop playsinline></video>
+      <figcaption>thirty seconds — scaffold to a live-edited local-Whisper app</figcaption>
+    </figure>
+  </div>
+
+  <div class="pg">
+    <div class="hint">
+      <span>the playground below is real — <b>edit the code, it re-runs live</b></span>
+      <span>nothing to install · models run in your browser</span>
+    </div>
+    <div class="shell"><iframe src="/playground/?v=2" title="knobkit playground"></iframe></div>
+  </div>
+
+  <footer>
+    <span>MIT © knobkit</span>
+    <span><a href="https://github.com/knobkit/knobkit">github</a> · <a href="https://www.npmjs.com/package/knobkit">npm</a> · node ≥ 22</span>
+  </footer>
+</main>
+<script>
+  const root = document.documentElement, btn = document.getElementById("toggle");
+  const set = (t) => { root.dataset.theme = t; };
+  set(matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  btn.onclick = () => set(root.dataset.theme === "dark" ? "light" : "dark");
+</script>
+</body>
+</html>
