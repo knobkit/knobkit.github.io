@@ -32,6 +32,8 @@ const preview = frame({ doc: SHELL, title: "preview" });
 // No title/description — the playground is embedded (or full-page); the host provides context.
 const app = knobkit({
   widgets: row(col(picker, editor), preview),
+  theme: "system",
+  density: "xs",
 });
 
 let previewWin: Window | null = null;
