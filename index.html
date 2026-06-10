@@ -76,7 +76,7 @@
     transition: border-color .15s;
   }
   .install:hover { border-color: var(--accent); }
-  .install .ps1 { color: var(--accent); }
+  .install::before { content: "$ "; color: var(--accent); user-select: none; }
   .badges { margin-top: 16px; font-size: 13.5px; color: var(--dim); }
   .badges a { color: var(--dim); }
 
@@ -134,7 +134,7 @@
       <p class="tagline">Your AI app, <em>live as you type</em>.</p>
       <p class="pitch">Declare widgets, write event handlers — done. The same file runs entirely
       in the browser, or with handlers on a <b>stateless</b> Node server. Swap one line.</p>
-      <div class="install"><span class="ps1">$</span> npm create knobkit@latest</div>
+      <div class="install">npm create knobkit@latest</div>
       <div class="badges">free · open source · MIT · <a href="https://github.com/knobkit/knobkit">github</a> · <a href="https://www.npmjs.com/package/knobkit">npm</a></div>
     </div>
     <figure class="filmwrap" style="margin:0">
