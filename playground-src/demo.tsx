@@ -26,7 +26,7 @@ const SHELL = [
 ].join("");
 
 const picker = dropdown({ choices: EXAMPLES.map((e) => e.name) });
-const editor = code({ language: "typescript", value: EXAMPLES[0]!.code });
+const editor = code({ language: "typescript", value: EXAMPLES[0]!.code, wrap: true });
 const preview = frame({ doc: SHELL, title: "preview" });
 
 // No title/description — the playground is embedded (or full-page); the host provides context.
@@ -34,6 +34,7 @@ const app = knobkit({
   widgets: row(col(picker, editor), preview),
   theme: "system",
   density: "xs",
+  fill: true,
 });
 
 let previewWin: Window | null = null;
