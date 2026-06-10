@@ -1,6 +1,6 @@
 # knobkit.github.io
 
-The knobkit marketing site, served by GitHub Pages at <https://knobkit.github.io>.
+The knobkit marketing site, served by GitHub Pages at <https://knobkit.dev>.
 
 ## Layout
 
