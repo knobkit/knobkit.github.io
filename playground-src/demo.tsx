@@ -7,7 +7,7 @@ import { EXAMPLES } from "./examples.js";
 const importmap = JSON.stringify({ imports: { knobkit: runtimeUrl } });
 
 const SHELL = [
-  '<!doctype html><html><head><meta charset="utf-8">',
+  '<!doctype html><html data-density="xs"><head><meta charset="utf-8">',
   `<link rel="stylesheet" href="${runtimeCss}">`,
   "<style>html,body{margin:0;height:100%}#err{display:none;position:fixed;left:0;right:0;bottom:0;margin:0;padding:10px 14px;background:#fde8e8;color:#9b1c1c;font:13px/1.45 ui-monospace,Menlo,monospace;border-top:1px solid #f5c2c2;white-space:pre-wrap;z-index:10}</style>",
   `<script type="importmap">${importmap}</script>`,
