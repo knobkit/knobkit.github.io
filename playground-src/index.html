@@ -40,8 +40,16 @@
         height: 100%;
         min-height: 0;
       }
-      .pu-code {
-        min-height: 42vh;
+      .pu-layout-col > .pu-field:last-child {
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .pu-code,
+      .pu-code .cm-editor {
+        height: 100%;
+      }
+      .pu-code .cm-scroller {
+        max-height: none;
       }
     </style>
   </head>
