@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>knobkit — mock 02 · field guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── MOCK 02 · "A field guide" — printed-datasheet editorial ── */
+  :root {
+    --paper: #f6f1e5;
+    --ink: #211d16;
+    --faded: #8a8170;
+    --blue: #1d4ed8;
+    --rule: #211d16;
+    --hair: #d8d0bd;
+  }
+  [data-theme="dark"] {
+    --paper: #171410;
+    --ink: #ece4d2;
+    --faded: #897f6a;
+    --blue: #8fb0f9;
+    --rule: #ece4d2;
+    --hair: #2e2920;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 18px/1.65 "Newsreader", serif;
+    transition: background 0.25s, color 0.25s;
+  }
+  /* paper grain */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  main { max-width: 980px; margin: 0 auto; padding: 40px 28px 110px; }
+  .toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 9;
+    font: 500 12px/1 "IBM Plex Mono", monospace; letter-spacing: 0.1em;
+    color: var(--ink); background: transparent;
+    border: 1px solid var(--ink); border-radius: 99px;
+    padding: 8px 16px; cursor: pointer;
+  }
+  .toggle:hover { background: var(--ink); color: var(--paper); }
+
+  .masthead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font: 500 12px/1 "IBM Plex Mono", monospace; letter-spacing: 0.12em;
+    color: var(--faded); text-transform: uppercase;
+    border-bottom: 3px double var(--rule); padding-bottom: 12px;
+  }
+  h1 {
+    font: 900 clamp(72px, 14vw, 170px)/0.92 "Fraunces", serif;
+    letter-spacing: -0.035em; margin: 30px 0 8px;
+    font-variation-settings: "opsz" 144;
+  }
+  h1 .dot { color: var(--blue); }
+  .deck {
+    font: italic 400 clamp(22px, 3.4vw, 32px)/1.3 "Fraunces", serif;
+    margin: 0 0 14px; max-width: 24ch;
+  }
+  .deck b { font-style: normal; font-weight: 600; color: var(--blue); }
+  .kicker {
+    font: 500 13px/1.6 "IBM Plex Mono", monospace; color: var(--faded);
+    margin-bottom: 56px;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--rule); }
+  .cell { padding: 30px 34px 36px 0; border-bottom: 1px solid var(--hair); }
+  .cell + .cell { border-left: 1px solid var(--hair); padding-left: 34px; padding-right: 0; }
+  .cell:nth-child(odd) { padding-right: 34px; }
+  .no {
+    font: 300 15px/1 "Fraunces", serif; color: var(--blue);
+    letter-spacing: 0.08em; display: block; margin-bottom: 14px;
+  }
+  h3 { font: 600 26px/1.15 "Fraunces", serif; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .cell p { margin: 0; color: color-mix(in srgb, var(--ink) 82%, var(--faded)); font-size: 16.5px; }
+  .cell p b { color: var(--ink); font-weight: 500; }
+
+  .spread { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 44px; margin: 70px 0; align-items: start; }
+  pre {
+    margin: 0; padding: 26px 28px;
+    font: 400 13px/1.75 "IBM Plex Mono", monospace;
+    border: 1px solid var(--rule); position: relative;
+    background: color-mix(in srgb, var(--paper) 94%, var(--ink) 3%);
+    overflow-x: auto;
+  }
+  pre::before {
+    content: "fig. 1 — a complete app";
+    position: absolute; top: -11px; left: 18px;
+    background: var(--paper); padding: 0 10px;
+    font: italic 400 14px/1 "Fraunces", serif; color: var(--faded);
+  }
+  .c-kw { color: var(--blue); }
+  .c-str { color: #9a6700; }
+  [data-theme="dark"] .c-str { color: #d8b45e; }
+  .c-dim { color: var(--faded); }
+
+  .aside h3 { font-size: 30px; }
+  .aside p { font-size: 17px; }
+  .footnote { font-size: 14.5px; color: var(--faded); border-top: 1px solid var(--hair); margin-top: 22px; padding-top: 12px; }
+  .footnote sup { color: var(--blue); }
+
+  .video {
+    margin: 70px 0; border: 1px solid var(--rule); aspect-ratio: 16/9;
+    display: grid; place-items: center; position: relative;
+    background: color-mix(in srgb, var(--paper) 90%, var(--ink) 5%);
+  }
+  .video::before {
+    content: "plate I — thirty seconds, silent";
+    position: absolute; top: -11px; left: 18px; background: var(--paper);
+    padding: 0 10px; font: italic 400 14px/1 "Fraunces", serif; color: var(--faded);
+  }
+  .play {
+    width: 84px; height: 84px; border-radius: 50%;
+    border: 1px solid var(--ink); display: grid; place-items: center;
+    font-size: 26px; transition: all 0.15s; cursor: pointer;
+  }
+  .play:hover { background: var(--blue); border-color: var(--blue); color: #fff; transform: scale(1.06); }
+
+  .cta { text-align: center; margin-top: 80px; }
+  .cta .lead { font: italic 400 22px/1 "Fraunces", serif; color: var(--faded); margin-bottom: 22px; }
+  .install {
+    display: inline-block; font: 500 19px/1 "IBM Plex Mono", monospace;
+    border: 1px solid var(--rule); border-radius: 99px;
+    padding: 20px 38px; cursor: copy; user-select: all;
+    transition: all 0.15s;
+  }
+  .install:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  footer {
+    margin-top: 90px; border-top: 3px double var(--rule); padding-top: 14px;
+    display: flex; justify-content: space-between;
+    font: 500 12px/1.6 "IBM Plex Mono", monospace; letter-spacing: 0.1em;
+    color: var(--faded); text-transform: uppercase;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  @media (max-width: 760px) {
+    .grid, .spread { grid-template-columns: 1fr; }
+    .cell + .cell { border-left: 0; padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+<button class="toggle" id="toggle">night</button>
+<main>
+  <div class="masthead"><span>No. 001</span><span>A field guide to shipping AI apps</span><span>MIT · 2026</span></div>
+
+  <h1>knobkit<span class="dot">.</span></h1>
+  <p class="deck">Your AI app, <b>live as you type</b> — widgets in, handlers on, nothing else.</p>
+  <p class="kicker">declare → handle → serve( ) | mount( ) &nbsp;·&nbsp; the browser owns the state</p>
+
+  <div class="grid">
+    <div class="cell">
+      <span class="no">№ 01</span>
+      <h3>The browser owns all state.</h3>
+      <p>A knobkit server keeps <b>nothing</b>. Handlers pull the attributes they actually read
+      and write back structured edits. Restart, redeploy, scale — no one's app breaks.</p>
+    </div>
+    <div class="cell">
+      <span class="no">№ 02</span>
+      <h3>One file, two tiers.</h3>
+      <p>Prototype entirely in the browser — WebGPU models included — then move handlers to a
+      server when you need secrets or big models, <b>by changing the last line</b>.</p>
+    </div>
+    <div class="cell">
+      <span class="no">№ 03</span>
+      <h3>Events, not reruns.</h3>
+      <p>Handlers are plain <b>on(event, async fn)</b> functions. No full-script re-execution on
+      every click, no reactive graph to fight, no widget-key gymnastics.</p>
+    </div>
+    <div class="cell">
+      <span class="no">№ 04</span>
+      <h3>Data stays where it lives.</h3>
+      <p>A request crossing the wire is just <b>{ type, payload }</b> — never a copy of state.
+      An attribute a handler never reads never leaves the browser.</p>
+    </div>
+  </div>
+
+  <div class="spread">
+    <pre><span class="c-kw">import</span> { knobkit, chat } <span class="c-kw">from</span> <span class="c-str">"knobkit"</span>;
+
+<span class="c-kw">const</span> convo = chat({ placeholder: <span class="c-str">"Say something…"</span> });
+
+<span class="c-kw">const</span> app = knobkit({
+  title: <span class="c-str">"Echo bot"</span>,
+  widgets: [convo],
+});
+
+app.on(convo.sent, <span class="c-kw">async</span> ({ text }) =&gt; {
+  convo.say({ role: <span class="c-str">"user"</span>, content: text });
+  convo.say({
+    role: <span class="c-str">"assistant"</span>,
+    content: [...text].reverse().join(<span class="c-str">""</span>),
+  });
+});
+
+app.serve(); <span class="c-dim">// ← the only line that changes</span></pre>
+    <div class="aside">
+      <h3>Same authoring feel as Gradio or Streamlit.<br/>Different architecture.<sup>1</sup></h3>
+      <p>Declare inputs, write a function, get an app — but with plain events instead of reruns,
+      and a server that holds no sessions, no sticky state, no memory of you at all.</p>
+      <p class="footnote"><sup>1</sup> Thirty-plus widgets: chat, mic, webcam, code, table,
+      chart, upload, gallery, audio, video, sliders, sandboxed frames — and <i>custom()</i>
+      when those run out.</p>
+    </div>
+  </div>
+
+  <div class="video"><div class="play">▶</div></div>
+
+  <div class="cta">
+    <div class="lead">begin —</div>
+    <div class="install">npm create knobkit@latest</div>
+  </div>
+
+  <footer>
+    <span>knobkit(1)</span>
+    <span><a href="https://github.com/knobkit/knobkit">github</a> · <a href="https://www.npmjs.com/package/knobkit">npm</a></span>
+    <span>node ≥ 22</span>
+  </footer>
+</main>
+<script>
+  const root = document.documentElement, btn = document.getElementById("toggle");
+  const set = (t) => { root.dataset.theme = t; btn.textContent = t === "dark" ? "day" : "night"; };
+  set(location.hash === "#dark" ? "dark" : location.hash === "#light" ? "light" : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  btn.onclick = () => set(root.dataset.theme === "dark" ? "light" : "dark");
+</script>
+</body>
+</html>

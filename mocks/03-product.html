@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>knobkit — mock 03 · the page is a knobkit app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;0,900;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── MOCK 03 · dogfood — the marketing page IS a knobkit app ── */
+  :root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --border: #e3e6ea;
+    --text: #1c1f23;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-press: #1d4ed8;
+    --user-bubble: #2563eb;
+    --bot-bubble: #f6f7f9;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 10px 28px rgba(0,0,0,0.05);
+  }
+  [data-theme="dark"] {
+    --bg: #0f1117;
+    --panel: #181b23;
+    --border: #262a35;
+    --text: #e7eaf0;
+    --muted: #8b93a3;
+    --accent: #4f7df2;
+    --accent-press: #6f96f5;
+    --bot-bubble: #11141b;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 14px 36px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15.5px/1.55 "Schibsted Grotesk", sans-serif;
+    transition: background 0.25s, color 0.25s;
+  }
+  main { max-width: 740px; margin: 0 auto; padding: 64px 20px 110px; }
+
+  .toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 9;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--panel);
+    color: var(--text); cursor: pointer; font-size: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  /* the "page" widget card — knobkit's own .pu-page */
+  .pu-page {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 30px 30px 34px; margin-bottom: 22px;
+    opacity: 0; transform: translateY(14px);
+    animation: rise 0.55s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  .apptitle { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .apptitle svg { flex: 0 0 auto; }
+  h1 { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; margin: 0; }
+  .desc { color: var(--muted); margin: 0 0 22px; font-size: 17px; }
+  .desc b { color: var(--accent); font-weight: 700; }
+
+  .field-label {
+    font: 500 11.5px/1 "Spline Sans Mono", monospace; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 8px;
+  }
+  .field-label::after { content: " widget"; opacity: 0.55; }
+
+  /* chat widget */
+  .chat { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .chat .msgs { padding: 14px; display: flex; flex-direction: column; gap: 9px; }
+  .bubble {
+    max-width: 78%; padding: 9px 13px; border-radius: 11px; font-size: 15px;
+    opacity: 0; transform: translateY(8px); animation: rise 0.4s ease forwards;
+  }
+  .bubble.user { align-self: flex-end; background: var(--user-bubble); color: #fff; }
+  .bubble.bot { align-self: flex-start; background: var(--bot-bubble); border: 1px solid var(--border); }
+  .bubble.bot b { color: var(--accent); }
+  .chat .input {
+    border-top: 1px solid var(--border); padding: 11px 14px;
+    color: var(--muted); display: flex; justify-content: space-between; font-size: 15px;
+  }
+  .chat .input .send { color: var(--accent); font-weight: 700; }
+
+  /* code widget */
+  pre {
+    margin: 0; border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; overflow-x: auto;
+    font: 400 13px/1.7 "Spline Sans Mono", monospace;
+    background: var(--bot-bubble);
+  }
+  .c-kw { color: var(--accent); font-weight: 500; }
+  .c-str { color: #178246; }
+  [data-theme="dark"] .c-str { color: #58c98b; }
+  .c-dim { color: var(--muted); }
+  .swap { display: inline-grid; vertical-align: top; }
+  .swap span { grid-area: 1/1; transition: opacity .35s, transform .35s; }
+  .swap [data-alt] { opacity: 0; transform: translateY(8px); }
+  .swapped .swap [data-main] { opacity: 0; transform: translateY(-8px); }
+  .swapped .swap [data-alt] { opacity: 1; transform: none; }
+
+  /* radio widget (the tier picker) */
+  .radio { display: flex; gap: 10px; margin-top: 12px; }
+  .radio button {
+    flex: 1; padding: 11px 14px; border-radius: 10px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text); font: inherit; font-size: 14px; text-align: left;
+    transition: border-color .15s, background .15s;
+  }
+  .radio button small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .radio button.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .radio button.on small b { color: var(--accent); }
+
+  /* output / video widget */
+  .video {
+    border: 1px solid var(--border); border-radius: 10px; aspect-ratio: 16/9;
+    display: grid; place-items: center; background: var(--bot-bubble);
+  }
+  .video .play {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+    color: #fff; display: grid; place-items: center; font-size: 20px;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 45%, transparent);
+    cursor: pointer; transition: transform .15s;
+  }
+  .video .play:hover { transform: scale(1.08); }
+  .video small { position: absolute; margin-top: 110px; color: var(--muted); }
+
+  /* button-row widget */
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pu-btn {
+    border: none; border-radius: 10px; padding: 13px 22px; cursor: pointer;
+    font: 700 15px/1 "Schibsted Grotesk", sans-serif;
+    background: var(--accent); color: #fff;
+    transition: background .15s, transform .1s;
+  }
+  .pu-btn:hover { background: var(--accent-press); }
+  .pu-btn:active { transform: scale(0.97); }
+  .pu-btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .pu-btn.mono { font-family: "Spline Sans Mono", monospace; font-weight: 500; user-select: all; cursor: copy; }
+
+  .statusbar {
+    display: flex; justify-content: space-between; color: var(--muted);
+    font: 400 12.5px/1 "Spline Sans Mono", monospace; padding: 0 6px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .gap { height: 20px; }
+</style>
+</head>
+<body>
+<button class="toggle" id="toggle">☾</button>
+<main>
+
+  <div class="pu-page">
+    <div class="apptitle">
+      <svg width="46" height="46" viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="56" rx="14" fill="#2563eb"/><g stroke="#fff" stroke-width="7" stroke-linecap="round"><line x1="23" y1="16" x2="23" y2="48"/><line x1="23" y1="33" x2="42" y2="18"/><line x1="23" y1="33" x2="42" y2="46"/></g><circle cx="23" cy="33" r="6.5" fill="#fff"/><circle cx="23" cy="33" r="2.8" fill="#1d4ed8"/></svg>
+      <h1>knobkit</h1>
+    </div>
+    <p class="desc">Your AI app, <b>live as you type</b>. This page is laid out like the apps it makes — widgets all the way down.</p>
+
+    <p class="field-label">chat</p>
+    <div class="chat">
+      <div class="msgs">
+        <div class="bubble user" style="animation-delay:.3s">what is knobkit?</div>
+        <div class="bubble bot" style="animation-delay:.75s">Declare widgets, write <b>on(event, handler)</b> functions — that's a complete app. No reruns, no reactive graph.</div>
+        <div class="bubble user" style="animation-delay:1.3s">where does it run?</div>
+        <div class="bubble bot" style="animation-delay:1.75s">Entirely in the <b>browser</b> — or with handlers on a <b>stateless Node server</b>. Same file. The browser owns all state either way.</div>
+      </div>
+      <div class="input"><span>Ask about knobkit…</span><span class="send">➤</span></div>
+    </div>
+  </div>
+
+  <div class="pu-page" style="animation-delay:.18s" id="codecard">
+    <p class="field-label">code</p>
+<pre><span class="c-kw">import</span> { knobkit, chat } <span class="c-kw">from</span> <span class="c-str">"knobkit"</span>;
+
+<span class="c-kw">const</span> convo = chat({ placeholder: <span class="c-str">"Say something…"</span> });
+<span class="c-kw">const</span> app = knobkit({ title: <span class="c-str">"Echo bot"</span>, widgets: [convo] });
+
+app.on(convo.sent, <span class="c-kw">async</span> ({ text }) =&gt; {
+  convo.say({ role: <span class="c-str">"user"</span>, content: text });
+  convo.say({ role: <span class="c-str">"assistant"</span>, content: [...text].reverse().join(<span class="c-str">""</span>) });
+});
+
+app.<span class="swap"><span data-main>serve();&nbsp;<span class="c-dim">// handlers on a stateless server</span></span><span data-alt>mount(<span class="c-str">"#root"</span>);&nbsp;<span class="c-dim">// no server at all</span></span></span></pre>
+    <p class="field-label" style="margin-top:16px">radio — pick a tier, the file barely changes</p>
+    <div class="radio">
+      <button class="on" id="r-serve">app.serve()<small>handlers on Node — secrets, big models, <b>zero sessions</b></small></button>
+      <button id="r-mount">app.mount("#root")<small>all in the browser — static hosting, <b>WebGPU models</b></small></button>
+    </div>
+  </div>
+
+  <div class="pu-page" style="animation-delay:.32s">
+    <p class="field-label">video</p>
+    <div class="video"><div class="play">▶</div><small>demo.mp4 — 30 seconds, silent</small></div>
+  </div>
+
+  <div class="pu-page" style="animation-delay:.46s">
+    <p class="field-label">buttons</p>
+    <div class="btns">
+      <button class="pu-btn mono">npm create knobkit@latest</button>
+      <a class="pu-btn ghost" href="https://github.com/knobkit/knobkit">GitHub ↗</a>
+      <a class="pu-btn ghost" href="https://www.npmjs.com/package/knobkit">npm ↗</a>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span>MIT · node ≥ 22</span>
+    <span>chat · mic · webcam · code · table · chart · +24 more</span>
+  </div>
+</main>
+<script>
+  const root = document.documentElement, btn = document.getElementById("toggle");
+  const set = (t) => { root.dataset.theme = t; btn.textContent = t === "dark" ? "☀" : "☾"; };
+  set(location.hash === "#dark" ? "dark" : location.hash === "#light" ? "light" : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  btn.onclick = () => set(root.dataset.theme === "dark" ? "light" : "dark");
+
+  const card = document.getElementById("codecard");
+  const rs = document.getElementById("r-serve"), rm = document.getElementById("r-mount");
+  rs.onclick = () => { card.classList.remove("swapped"); rs.classList.add("on"); rm.classList.remove("on"); };
+  rm.onclick = () => { card.classList.add("swapped"); rm.classList.add("on"); rs.classList.remove("on"); };
+</script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>knobkit — mock 04 · night lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── MOCK 04 · "night lab" — the demo video's habitat as a page ── */
+  :root {
+    --bg: #f3f5fa;
+    --glow1: #dbe6ff;
+    --glow2: #eef2fb;
+    --text: #14171f;
+    --muted: #5b6372;
+    --accent: #2563eb;
+    --accent-ink: #1d4ed8;
+    --chrome: #ffffff;
+    --chrome-border: #dfe4ee;
+    --term: #10131b;
+    --term-text: #d6dae3;
+    --card-shadow: 0 24px 70px rgba(30, 60, 140, 0.13);
+  }
+  [data-theme="dark"] {
+    --bg: #0b0d13;
+    --glow1: #16203a;
+    --glow2: #0e1322;
+    --text: #eef1f7;
+    --muted: #8b93a3;
+    --accent: #5fb0fc;
+    --accent-ink: #7ba6f7;
+    --chrome: #161922;
+    --chrome-border: #262b38;
+    --card-shadow: 0 24px 70px rgba(0,0,0,0.55);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--text);
+    background: radial-gradient(ellipse 90% 60% at 50% -5%, var(--glow1), var(--glow2) 55%, var(--bg) 90%);
+    background-attachment: fixed;
+    font: 16px/1.6 "IBM Plex Sans", sans-serif;
+    transition: color 0.25s;
+  }
+  main { max-width: 1060px; margin: 0 auto; padding: 90px 24px 120px; text-align: center; }
+
+  .toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 9;
+    width: 42px; height: 42px; border-radius: 12px;
+    border: 1px solid var(--chrome-border); background: var(--chrome);
+    color: var(--text); cursor: pointer; font-size: 17px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 13px/1 "IBM Plex Mono", monospace;
+    color: var(--accent-ink);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border-radius: 99px; padding: 8px 16px; margin-bottom: 28px;
+  }
+  .badge .pulse {
+    width: 7px; height: 7px; border-radius: 4px; background: var(--accent);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 20%, transparent); } }
+
+  h1 {
+    font: 800 clamp(54px, 9vw, 108px)/1 "Bricolage Grotesque", sans-serif;
+    letter-spacing: -0.04em; margin: 0 0 18px;
+  }
+  h1 .live {
+    background: linear-gradient(100deg, var(--accent), #7c5cff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--muted); font-size: 19px; max-width: 56ch; margin: 0 auto 38px; }
+  .sub b { color: var(--text); font-weight: 500; }
+
+  .install {
+    display: inline-flex; align-items: center; gap: 14px;
+    font: 500 17px/1 "IBM Plex Mono", monospace;
+    background: var(--term); color: var(--term-text);
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: 14px; padding: 18px 26px; cursor: copy; user-select: all;
+    box-shadow: 0 0 44px color-mix(in srgb, var(--accent) 28%, transparent);
+    transition: box-shadow .2s, transform .15s;
+  }
+  .install:hover { box-shadow: 0 0 70px color-mix(in srgb, var(--accent) 45%, transparent); transform: translateY(-2px); }
+  .install .ps1 { color: #5fb0fc; }
+  .install .copy { color: var(--muted); font-size: 13px; border-left: 1px solid #303644; padding-left: 14px; }
+
+  /* floating windows */
+  .stagewrap { perspective: 1200px; margin-top: 74px; }
+  .stage {
+    display: flex; gap: 22px; justify-content: center; align-items: stretch;
+    transform: rotateX(7deg); transform-style: preserve-3d;
+  }
+  .window {
+    text-align: left; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--chrome-border);
+    box-shadow: var(--card-shadow);
+    animation: float 7s ease-in-out infinite;
+  }
+  .window.editor { width: 470px; background: var(--term); animation-delay: 0s; }
+  .window.browser { width: 360px; background: var(--chrome); animation-delay: 1.4s; }
+  @keyframes float { 50% { transform: translateY(-9px); } }
+  .bar {
+    display: flex; align-items: center; gap: 7px; padding: 10px 13px;
+    background: color-mix(in srgb, var(--term) 85%, #fff 6%);
+    border-bottom: 1px solid #262b38;
+  }
+  .browser .bar { background: color-mix(in srgb, var(--chrome) 92%, var(--text) 4%); border-color: var(--chrome-border); }
+  .dot { width: 11px; height: 11px; border-radius: 6px; }
+  .bar .t { flex: 1; text-align: center; font: 400 12px/1 "IBM Plex Mono", monospace; color: #8b93a3; }
+  .code {
+    padding: 16px 18px; font: 400 12.5px/1.75 "IBM Plex Mono", monospace; color: #d6dae3;
+    white-space: pre; overflow: hidden;
+  }
+  .c-kw { color: #c678dd; } .c-str { color: #98c379; } .c-fn { color: #61afef; } .c-dim { color: #5c6370; }
+  .typeline::after { content: ""; display: inline-block; width: 8px; height: 14px; background: #d6dae3; vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .appui { padding: 18px; font-family: "IBM Plex Sans", sans-serif; }
+  .appui h4 { margin: 0 0 2px; font-size: 16px; color: var(--text); }
+  .appui .d { color: var(--muted); font-size: 12.5px; margin-bottom: 12px; }
+  .appui .inp {
+    border: 1px solid var(--chrome-border); border-radius: 8px;
+    padding: 8px 11px; font-size: 13px; color: var(--muted); margin-bottom: 10px;
+  }
+  .appui .go {
+    display: inline-block; background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 600; border-radius: 8px; padding: 8px 16px; margin-bottom: 12px;
+  }
+  .appui .out {
+    border: 1px solid var(--chrome-border); border-radius: 8px;
+    background: color-mix(in srgb, var(--chrome) 80%, var(--bg) 20%);
+    padding: 9px 11px; font-size: 13px; color: var(--text);
+    overflow: hidden; white-space: nowrap;
+  }
+  .appui .out::after { content: ""; display: inline-block; width: 7px; height: 13px; background: var(--accent); vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+
+  /* marquee */
+  .marquee { margin-top: 84px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .marquee .track {
+    display: inline-flex; gap: 14px; white-space: nowrap;
+    animation: scroll 26s linear infinite; padding-left: 14px;
+  }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  .chip {
+    font: 500 13.5px/1 "IBM Plex Mono", monospace; color: var(--muted);
+    border: 1px solid var(--chrome-border); background: var(--chrome);
+    border-radius: 99px; padding: 9px 16px;
+  }
+  .chip b { color: var(--accent-ink); font-weight: 500; }
+
+  .pillars { display: flex; gap: 18px; margin-top: 64px; text-align: left; }
+  .pillar {
+    flex: 1; border: 1px solid var(--chrome-border); border-radius: 14px;
+    background: color-mix(in srgb, var(--chrome) 75%, transparent);
+    backdrop-filter: blur(8px); padding: 22px 22px 24px;
+  }
+  .pillar h3 { margin: 0 0 8px; font: 500 19px/1.25 "Bricolage Grotesque", sans-serif; }
+  .pillar h3::before { content: "▸ "; color: var(--accent); }
+  .pillar p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+  footer { margin-top: 84px; color: var(--muted); font: 400 13px/1 "IBM Plex Mono", monospace; display: flex; justify-content: center; gap: 26px; }
+  a { color: var(--accent-ink); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  @media (max-width: 900px) { .stage { flex-direction: column; align-items: center; } .pillars { flex-direction: column; } }
+</style>
+</head>
+<body>
+<button class="toggle" id="toggle">☾</button>
+<main>
+  <div class="badge"><span class="pulse"></span>open source · MIT · node ≥ 22</div>
+  <h1>Your AI app,<br/><span class="live">live as you type.</span></h1>
+  <p class="sub">Declare widgets, write event handlers — <b>done</b>. The same file runs entirely
+  in the browser, or with handlers on a <b>stateless</b> Node server. Swap one line.</p>
+
+  <div class="install"><span><span class="ps1">$</span> npm create knobkit@latest</span><span class="copy">⌘C</span></div>
+
+  <div class="stagewrap">
+    <div class="stage">
+      <div class="window editor">
+        <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="t">demo.tsx</span></div>
+        <div class="code"><span class="c-kw">import</span> { knobkit, text, button, output } <span class="c-kw">from</span> <span class="c-str">"knobkit"</span>;
+
+<span class="c-kw">const</span> name = <span class="c-fn">text</span>({ placeholder: <span class="c-str">"Ada"</span> });
+<span class="c-kw">const</span> greet = <span class="c-fn">button</span>({ label: <span class="c-str">"Greet"</span> });
+<span class="c-kw">const</span> out = <span class="c-fn">output</span>();
+
+<span class="c-kw">const</span> app = <span class="c-fn">knobkit</span>({ widgets: [name, greet, out] });
+
+app.<span class="c-fn">on</span>(greet.clicked, <span class="c-kw">async</span> () =&gt; {
+  <span class="c-kw">const</span> who = (<span class="c-kw">await</span> name.<span class="c-fn">value</span>()).<span class="c-fn">trim</span>() || <span class="c-str">"world"</span>;
+  out.<span class="c-fn">set</span>(<span class="c-str">`Hello, ${who}!`</span><span class="typeline" id="typeline"></span>);
+});
+
+app.<span class="c-fn">serve</span>(); <span class="c-dim">// ← or app.mount("#root")</span></div>
+      </div>
+      <div class="window browser">
+        <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="t">localhost:3000</span></div>
+        <div class="appui">
+          <h4>Hello, knobkit</h4>
+          <div class="d">Type a name and click Greet.</div>
+          <div class="inp">Ada</div>
+          <div class="go">Greet</div>
+          <div class="out" id="liveout">Hello, Ada!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee"><div class="track" id="track"></div></div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <h3>The browser owns all state</h3>
+      <p>The server keeps nothing. Handlers pull what they read, send structured edits back.
+      Restart, redeploy, scale — nobody's app breaks.</p>
+    </div>
+    <div class="pillar">
+      <h3>One file, two tiers</h3>
+      <p>Prototype client-side — WebGPU models included — then move handlers to Node for
+      secrets and big models by changing the last line.</p>
+    </div>
+    <div class="pillar">
+      <h3>Events, not reruns</h3>
+      <p>Plain on(event, fn) handlers. No full-script re-execution per click, no reactive
+      graph to fight, no widget-key gymnastics.</p>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://github.com/knobkit/knobkit">github</a>
+    <a href="https://www.npmjs.com/package/knobkit">npm</a>
+    <span>MIT</span>
+  </footer>
+</main>
+<script>
+  const root = document.documentElement, btn = document.getElementById("toggle");
+  const set = (t) => { root.dataset.theme = t; btn.textContent = t === "dark" ? "☀" : "☾"; };
+  set(location.hash === "#dark" ? "dark" : location.hash === "#light" ? "light" : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  btn.onclick = () => set(root.dataset.theme === "dark" ? "light" : "dark");
+
+  const widgets = ["chat","mic","webcam","code","table","chart","upload","gallery","audio","video","slider","dropdown","json","log","progress","frame","markdown","annotatedImage","highlightedText","custom()"];
+  document.getElementById("track").innerHTML =
+    [...widgets, ...widgets].map((w) => `<span class="chip"><b>${w}</b></span>`).join("");
+
+  // the "live as you type" bit: the editor edit and the browser output stay in sync
+  const variants = ["Hello, Ada!", "HELLO, ADA!"];
+  let v = 0;
+  setInterval(() => {
+    v = 1 - v;
+    document.getElementById("liveout").textContent = variants[v];
+  }, 2600);
+</script>
+</body>
+</html>

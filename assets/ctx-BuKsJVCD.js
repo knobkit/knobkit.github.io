@@ -1,0 +1,1 @@
+function e(e){return{read(t,n){return e.read(e.keyFor(t),n)},edit(t,n,r,i){e.edit(e.keyFor(t),n,r,i)},enable(t,n){e.enable(e.keyFor(t),n)},busy(t,n){e.busy(e.keyFor(t),n)},key(t){return e.keyFor(t)}}}export{e as t};

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>knobkit — mock 01 · man page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;700;800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  /* ── MOCK 01 · "man knobkit" — the whole page is a terminal session ── */
+  :root {
+    --bg: #f7f4ec;
+    --ink: #20241f;
+    --dim: #79806f;
+    --accent: #1d4ed8;
+    --accent-soft: #1d4ed814;
+    --green: #1a7f37;
+    --rule: #d9d4c5;
+    --sel: #ffe9a8;
+  }
+  [data-theme="dark"] {
+    --bg: #0b0f0d;
+    --ink: #c9d6c4;
+    --dim: #5d6a58;
+    --accent: #7ba6f7;
+    --accent-soft: #7ba6f718;
+    --green: #4cd964;
+    --rule: #1d2420;
+    --sel: #2b3a2e;
+  }
+  * { box-sizing: border-box; }
+  ::selection { background: var(--sel); }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.75 "IBM Plex Mono", monospace;
+    transition: background 0.25s, color 0.25s;
+  }
+  /* scanline grain */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.012) 2px 4px);
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 56px 28px 120px; }
+
+  .toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 9;
+    font: 700 12px/1 "Martian Mono", monospace;
+    color: var(--dim);
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 9px 14px; cursor: pointer; letter-spacing: 0.08em;
+  }
+  .toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+  .prompt { color: var(--green); font-weight: 500; }
+  .cmd { font-weight: 500; }
+  .caret {
+    display: inline-block; width: 9px; height: 18px;
+    background: var(--ink); vertical-align: -3px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  header { margin-bottom: 12px; }
+  .manhead {
+    display: flex; justify-content: space-between;
+    color: var(--dim); font-size: 13px; letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px; margin-bottom: 44px;
+  }
+  h1 {
+    font: 800 clamp(44px, 8vw, 84px)/1.02 "Martian Mono", monospace;
+    letter-spacing: -0.04em; margin: 18px 0 8px;
+  }
+  h1 .k { color: var(--accent); }
+  .tagline { font-size: 17px; margin: 0 0 6px; }
+  .tagline em { font-style: normal; background: var(--accent-soft); color: var(--accent); padding: 1px 6px; }
+
+  section { margin-top: 58px; }
+  h2 {
+    font: 700 13px/1 "Martian Mono", monospace;
+    letter-spacing: 0.22em; color: var(--dim);
+    margin: 0 0 18px; text-transform: uppercase;
+  }
+  h2::before { content: "## "; color: var(--accent); }
+  p { margin: 0 0 14px; max-width: 64ch; }
+  .indent { padding-left: 28px; border-left: 1px solid var(--rule); }
+
+  pre {
+    margin: 18px 0; padding: 22px 24px;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--bg) 88%, var(--ink) 4%);
+    overflow-x: auto; font-size: 13.5px; line-height: 1.7;
+  }
+  .c-kw { color: var(--accent); font-weight: 500; }
+  .c-str { color: var(--green); }
+  .c-dim { color: var(--dim); }
+
+  dl { margin: 0; }
+  dt { font-weight: 700; }
+  dt::before { content: "--"; color: var(--accent); margin-right: 2px; }
+  dd { margin: 2px 0 16px 28px; color: var(--dim); max-width: 60ch; }
+  dd b { color: var(--ink); font-weight: 500; }
+
+  .video {
+    margin-top: 18px; border: 1px solid var(--rule);
+    aspect-ratio: 16/9; position: relative;
+    background:
+      radial-gradient(70% 90% at 50% 20%, var(--accent-soft), transparent),
+      color-mix(in srgb, var(--bg) 92%, var(--ink) 5%);
+    display: grid; place-items: center;
+  }
+  .video span { color: var(--dim); font-size: 13px; }
+  .video .play {
+    width: 72px; height: 72px; border: 1px solid var(--accent);
+    display: grid; place-items: center; color: var(--accent);
+    font-size: 22px; margin-bottom: 12px;
+  }
+  .widgets { columns: 3; gap: 28px; font-size: 13.5px; color: var(--dim); }
+  .widgets b { color: var(--ink); font-weight: 500; }
+  .widgets div { break-inside: avoid; padding: 2px 0; }
+  .widgets div::before { content: "· "; color: var(--accent); }
+
+  .install {
+    margin-top: 26px; display: inline-block;
+    border: 1px solid var(--ink); padding: 16px 26px;
+    font-weight: 500; font-size: 16px;
+    box-shadow: 5px 5px 0 var(--accent);
+    transition: transform 0.12s, box-shadow 0.12s;
+    cursor: copy; user-select: all;
+  }
+  .install:hover { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 var(--accent); }
+
+  footer {
+    margin-top: 90px; padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between;
+    color: var(--dim); font-size: 13px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .reveal { opacity: 0; transform: translateY(10px); animation: rise 0.5s ease forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<button class="toggle" id="toggle">DARK</button>
+<main>
+  <div class="manhead reveal"><span>KNOBKIT(1)</span><span>Developer Commands</span><span>KNOBKIT(1)</span></div>
+
+  <header>
+    <div class="reveal" style="animation-delay:.05s"><span class="prompt">~ $</span> <span class="cmd" id="typed"></span><span class="caret"></span></div>
+    <h1 class="reveal" style="animation-delay:.15s"><span class="k">knob</span>kit</h1>
+    <p class="tagline reveal" style="animation-delay:.25s">Your AI app, <em>live as you type.</em></p>
+  </header>
+
+  <section class="reveal" style="animation-delay:.35s">
+    <h2>name</h2>
+    <p class="indent">knobkit — declare widgets, write event handlers, done. The same file runs
+    entirely in the browser — no server at all — or with handlers on a stateless Node server.
+    Swap one line.</p>
+  </section>
+
+  <section class="reveal" style="animation-delay:.45s">
+    <h2>synopsis</h2>
+<pre><span class="c-kw">import</span> { knobkit, chat } <span class="c-kw">from</span> <span class="c-str">"knobkit"</span>;
+
+<span class="c-kw">const</span> convo = chat({ placeholder: <span class="c-str">"Say something…"</span> });
+<span class="c-kw">const</span> app = knobkit({ title: <span class="c-str">"Echo bot"</span>, widgets: [convo] });
+
+app.on(convo.sent, <span class="c-kw">async</span> ({ text }) =&gt; {
+  convo.say({ role: <span class="c-str">"user"</span>, content: text });
+  convo.say({ role: <span class="c-str">"assistant"</span>, content: [...text].reverse().join(<span class="c-str">""</span>) });
+});
+
+app.serve(); <span class="c-dim">// or app.mount("#root") — same file, zero servers</span></pre>
+  </section>
+
+  <section>
+    <h2>description</h2>
+    <dl>
+      <dt>browser-owns-state</dt>
+      <dd>A knobkit server keeps <b>nothing</b>. Handlers pull the attributes they read and send
+      structured edits back. Restart, redeploy, scale — no one's app breaks.</dd>
+      <dt>one-file-two-tiers</dt>
+      <dd>Prototype fully client-side (WebGPU models included), move handlers to Node when you
+      need secrets or big models — <b>by changing the last line</b>.</dd>
+      <dt>events-not-reruns</dt>
+      <dd>Plain <b>on(event, fn)</b> handlers. No full-script re-execution, no reactive graph,
+      no widget-key gymnastics.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>demo</h2>
+    <div class="video">
+      <div style="text-align:center">
+        <div class="play">▶</div>
+        <span>demo.mp4 · 30s · silent</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>widgets</h2>
+    <div class="widgets">
+      <div><b>chat</b> streaming</div><div><b>mic</b> clips/live</div><div><b>webcam</b></div>
+      <div><b>code</b> editor</div><div><b>table</b> grid</div><div><b>chart</b> bar/line</div>
+      <div><b>upload</b></div><div><b>gallery</b></div><div><b>audio</b> / <b>video</b></div>
+      <div><b>slider</b></div><div><b>dropdown</b></div><div><b>json</b> / <b>log</b></div>
+      <div><b>frame</b> sandbox</div><div><b>markdown</b> out</div><div>+ <b>custom()</b></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>install</h2>
+    <div class="install">npm create knobkit@latest</div>
+  </section>
+
+  <footer>
+    <span>MIT</span>
+    <span><a href="https://github.com/knobkit/knobkit">github</a> · <a href="https://www.npmjs.com/package/knobkit">npm</a></span>
+    <span>node ≥ 22</span>
+  </footer>
+</main>
+<script>
+  const root = document.documentElement, btn = document.getElementById("toggle");
+  const set = (t) => { root.dataset.theme = t; btn.textContent = t === "dark" ? "LIGHT" : "DARK"; };
+  set(location.hash === "#dark" ? "dark" : location.hash === "#light" ? "light" : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  btn.onclick = () => set(root.dataset.theme === "dark" ? "light" : "dark");
+
+  const cmd = "man knobkit";
+  let i = 0;
+  (function type() {
+    document.getElementById("typed").textContent = cmd.slice(0, i++);
+    if (i <= cmd.length) setTimeout(type, 70);
+  })();
+</script>
+</body>
+</html>

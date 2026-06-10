@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>knobkit — page mocks</title>
+<style>
+  body { margin: 0; font: 14px/1.5 monospace; background: #14171f; color: #d6dae3; }
+  nav { display: flex; gap: 6px; padding: 10px 12px; background: #0b0d13; border-bottom: 1px solid #262b38; }
+  nav button { font: inherit; color: #8b93a3; background: transparent; border: 1px solid #262b38; border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+  nav button.on { color: #fff; border-color: #2563eb; background: #2563eb22; }
+  iframe { display: block; width: 100%; height: calc(100vh - 53px); border: 0; background: #fff; }
+</style>
+</head>
+<body>
+<nav id="nav"></nav>
+<iframe id="frame" src="01-manpage.html"></iframe>
+<script>
+  const mocks = [
+    ["01 man page", "01-manpage.html"],
+    ["02 field guide", "02-editorial.html"],
+    ["03 dogfood", "03-product.html"],
+    ["04 night lab", "04-nightlab.html"],
+  ];
+  const nav = document.getElementById("nav");
+  mocks.forEach(([label, src], i) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    if (i === 0) b.classList.add("on");
+    b.onclick = () => {
+      document.getElementById("frame").src = src;
+      nav.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+      b.classList.add("on");
+    };
+    nav.appendChild(b);
+  });
+</script>
+</body>
+</html>
