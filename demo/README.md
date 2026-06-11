@@ -17,9 +17,10 @@ npm run dev          # Remotion Studio at http://localhost:3000
 # MP4 for the marketing page → out/demo.mp4
 docker compose run --rm render
 
-# GIF for the README → out/demo.gif (640×360, ~10fps)
-docker compose run --rm render \
-  npx remotion render Demo out/demo.gif --codec=gif --every-nth-frame=3 --scale=0.5
+# GIF for the README — derived from the MP4 via a two-pass palette (800×450, 12fps, ~4.8 MB)
+docker compose run --rm render ffmpeg -i out/demo.mp4 -filter_complex \
+  "fps=12,scale=800:-2:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=256:stats_mode=diff[p];[s1][p]paletteuse=dither=sierra2_4a:diff_mode=rectangle" \
+  -y out/demo.gif
 ```
 
 First run builds the image (~2 min). Output lands in `out/` on the host.
@@ -28,18 +29,15 @@ First run builds the image (~2 min). Output lands in `out/` on the host.
 
 ```bash
 npm run render:mp4
-npm run render:gif
+npm run render:gif   # MP4 → GIF; needs ffmpeg on PATH (render:mp4 first)
 ```
 
-## If the GIF is too big (>10 MB)
+## Tuning the GIF (budget: under 5 MB)
 
-In order of impact: raise `--every-nth-frame` to 4, drop `--scale` to 0.4, or palette-optimize
-with system ffmpeg:
-
-```bash
-ffmpeg -i out/demo.gif -vf "palettegen=max_colors=128" -y palette.png
-ffmpeg -i out/demo.gif -i palette.png -lavfi "paletteuse=dither=bayer" -y out/demo-optimized.gif
-```
+The GIF is a palette-quantized downscale of the MP4 — a two-pass palette (`stats_mode=diff` +
+`paletteuse` with `diff_mode=rectangle`) is the big quality lever for the mostly-static scenes.
+Levers, by impact: `scale` width (800 → 960 sharpens the editor text, ~+0.7 MB), `fps`
+(12 → 10 shrinks), then `max_colors` (256 → 128). 800×450 @ 12fps lands ~4.8 MB.
 
 ## Layout
 
