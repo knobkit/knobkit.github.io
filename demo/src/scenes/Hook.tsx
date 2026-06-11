@@ -27,13 +27,17 @@ export const Hook: React.FC = () => {
             transform: `translateY(${tagY}px)`,
             color: "#fff",
             fontFamily: fonts.sans,
-            fontSize: 56,
+            fontSize: 52,
             fontWeight: 750,
             letterSpacing: "-0.02em",
             textAlign: "center",
+            maxWidth: 1000,
+            lineHeight: 1.18,
           }}
         >
-          Your AI app, <span style={{ color: "#7ba6f7" }}>live as you type.</span>
+          Create TypeScript webapps in <span style={{ color: "#7ba6f7" }}>minutes.</span>
+          <br />
+          Ship, host and share everywhere.
         </div>
       </div>
     </Stage>
